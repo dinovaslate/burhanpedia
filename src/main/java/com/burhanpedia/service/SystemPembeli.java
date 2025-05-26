@@ -276,7 +276,36 @@ public class SystemPembeli implements SystemMenu {
     }
 
     private void sortProduk(List<Product> products, Comparator<Product> comparator) {
-        products.sort(comparator);
+        if (products.size() <= 1) return;
+        quickSort(products, 0, products.size() - 1, comparator);
+    }
+
+    private void quickSort(List<Product> list, int low, int high, Comparator<Product> comparator) {
+        if (low < high) {
+            int pivotIndex = partition(list, low, high, comparator);
+            quickSort(list, low, pivotIndex - 1, comparator);
+            quickSort(list, pivotIndex + 1, high, comparator);
+        }
+    }
+
+    private int partition(List<Product> list, int low, int high, Comparator<Product> comparator) {
+        Product pivot = list.get(high);
+        int i = low - 1;
+        
+        for (int j = low; j < high; j++) {
+            if (comparator.compare(list.get(j), pivot) <= 0) {
+                i++;
+                swap(list, i, j);
+            }
+        }
+        swap(list, i + 1, high);
+        return i + 1;
+    }
+
+    private void swap(List<Product> list, int i, int j) {
+        Product temp = list.get(i);
+        list.set(i, list.get(j));
+        list.set(j, temp);
     }
 
     private List<Product> filterProduk(List<Product> products, Predicate<Product> predicate) {
